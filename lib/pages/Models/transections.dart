@@ -17,7 +17,7 @@ class Expenses extends ChangeNotifier {
   Future<void> initialize() async {
     await _initializeUser();
     if (_userId != null) {
-      print('User ID: $_userId');  // Debugging line to check user ID
+      print('User ID: $_userId'); // Debugging line to check user ID
       await fetchTransactions();
     } else {
       print('User is not logged in.');
@@ -73,10 +73,12 @@ class Expenses extends ChangeNotifier {
     if (_userId == null) return false;
 
     try {
-      final docRef = await FirebaseFirestore.instance.collection('transactions').add({
+      final docRef =
+          await FirebaseFirestore.instance.collection('transactions').add({
         'name': transaction.name,
         'price': transaction.price,
-        'date': Timestamp.fromDate(transaction.date),  // Use Timestamp to store date
+        'date':
+            Timestamp.fromDate(transaction.date), // Use Timestamp to store date
         'type': transaction.type,
         'userId': _userId,
       });
@@ -94,7 +96,10 @@ class Expenses extends ChangeNotifier {
     if (_userId == null) return;
 
     try {
-      await FirebaseFirestore.instance.collection('transactions').doc(transaction.id).delete();
+      await FirebaseFirestore.instance
+          .collection('transactions')
+          .doc(transaction.id)
+          .delete();
       _transactions.removeWhere((item) => item.id == transaction.id);
       notifyListeners();
     } catch (e) {
@@ -122,5 +127,17 @@ class Expenses extends ChangeNotifier {
     _userId = null;
     _transactions.clear();
     notifyListeners();
+  }
+
+  // New method to get the available balance
+  double getAvailableBalance() {
+    double totalIncome = _transactions
+        .where((item) => item.type == 'income')
+        .fold(0.0, (sum, item) => sum + item.price);
+    double totalExpenses = _transactions
+        .where((item) => item.type == 'expense')
+        .fold(0.0, (sum, item) => sum + item.price);
+
+    return totalIncome - totalExpenses;
   }
 }

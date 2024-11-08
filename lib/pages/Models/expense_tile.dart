@@ -19,10 +19,10 @@ class ExpenseTile {
   ExpenseTile copyWith({String? id}) {
     return ExpenseTile(
       id: id ?? this.id,
-      name: this.name,
-      price: this.price,
-      date: this.date,
-      type: this.type, // Preserve the type in the copied instance
+      name: name,
+      price: price,
+      date: date,
+      type: type, // Preserve the type in the copied instance
     );
   }
 

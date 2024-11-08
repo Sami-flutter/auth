@@ -1,7 +1,10 @@
+import 'package:auth/pages/forgetpassword.dart';
+// import 'package:auth/pages/forgetpassword.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:auth/pages/components/button.dart';
 import 'package:auth/pages/components/text_field.dart';
+
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
   const LoginPage({super.key, required this.onTap});
@@ -48,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -67,11 +70,11 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-               // const SizedBox(height: 20),
+                // const SizedBox(height: 20),
                 const Icon(
                   Icons.lock,
                   size: 130,
-                  color:Color.fromARGB(255, 3, 135, 196),
+                  color: Color.fromARGB(255, 3, 135, 196),
                 ),
                 const SizedBox(height: 10),
                 const Text(
@@ -94,9 +97,30 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'Password',
                   obscureText: true,
                 ),
-                const SizedBox(height: 25),
-                MyButton(onTap: signin, 
-                text: 'Sign in'),
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ForgetPassword(),
+                            ));
+                      },
+                      child: Text(
+                        'Forget Password',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 10, 103, 179),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                MyButton(onTap: signin, text: 'Sign in'),
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -130,13 +154,15 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: const Text('Home'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Welcome to the home page!'),
       ),
     );

@@ -7,6 +7,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class TransactionPage extends StatefulWidget {
+  const TransactionPage({super.key});
+
   @override
   _TransactionPageState createState() => _TransactionPageState();
 }
@@ -44,13 +46,13 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transactions'),
+        title: const Text('Transactions'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
             onPressed: () async {
               DateTimeRange? pickedDateRange = await showDateRangePicker(
                 context: context,
@@ -58,7 +60,8 @@ class _TransactionPageState extends State<TransactionPage> {
                 lastDate: DateTime(2101),
                 initialDateRange: selectedDateRange ??
                     DateTimeRange(
-                        start: DateTime.now().subtract(Duration(days: 30)),
+                        start:
+                            DateTime.now().subtract(const Duration(days: 30)),
                         end: DateTime.now()),
               );
               if (pickedDateRange != null) {
@@ -70,7 +73,7 @@ class _TransactionPageState extends State<TransactionPage> {
             color: Colors.black,
           ),
           IconButton(
-            icon: Icon(Icons.print),
+            icon: const Icon(Icons.print),
             onPressed: () {
               _generatePdfAndPrint(context);
             },
@@ -79,10 +82,11 @@ class _TransactionPageState extends State<TransactionPage> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<Expenses>(context, listen: false).fetchTransactions(),
+        future:
+            Provider.of<Expenses>(context, listen: false).fetchTransactions(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else {
             return Consumer<Expenses>(
               builder: (context, expensesProvider, child) {
@@ -90,10 +94,11 @@ class _TransactionPageState extends State<TransactionPage> {
                     expensesProvider.getCombinedAndSortedTransactions();
 
                 if (selectedDateRange != null) {
-                  combinedTransactions = combinedTransactions.where((transaction) {
+                  combinedTransactions =
+                      combinedTransactions.where((transaction) {
                     return transaction.date.isAfter(selectedDateRange!.start) &&
-                        transaction.date.isBefore(
-                            selectedDateRange!.end.add(Duration(days: 1)));
+                        transaction.date.isBefore(selectedDateRange!.end
+                            .add(const Duration(days: 1)));
                   }).toList();
                 }
 
@@ -107,10 +112,12 @@ class _TransactionPageState extends State<TransactionPage> {
                           final item = combinedTransactions[index];
                           final icon = _getIconForCategory(item.name);
                           return ListTile(
-                            leading: icon != null ? Icon(icon) : null, // Only show icon if it's not null
+                            leading: icon != null
+                                ? Icon(icon)
+                                : null, // Only show icon if it's not null
                             title: Text(
                               item.name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -119,7 +126,9 @@ class _TransactionPageState extends State<TransactionPage> {
                             trailing: Text(
                               '\$${item.price.toStringAsFixed(2)}',
                               style: TextStyle(
-                                color: item.type == 'income' ? Colors.green : Colors.red,
+                                color: item.type == 'income'
+                                    ? Colors.green
+                                    : Colors.red,
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -147,7 +156,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                   ],
                 );
               },
@@ -167,7 +176,7 @@ class _TransactionPageState extends State<TransactionPage> {
       width: MediaQuery.of(context).size.width / 2.2,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [Color(0xFF3E60E9), Color(0xFFED6A5A)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -176,15 +185,17 @@ class _TransactionPageState extends State<TransactionPage> {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent, // Use transparent to show gradient
-          shadowColor: Colors.transparent, // Remove shadow to keep gradient clear
+          backgroundColor:
+              Colors.transparent, // Use transparent to show gradient
+          shadowColor:
+              Colors.transparent, // Remove shadow to keep gradient clear
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
         ),
         child: Text(
           text,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -213,7 +224,7 @@ class _TransactionPageState extends State<TransactionPage> {
               pw.SizedBox(height: 16),
               pw.Text(
                 'Date Range: ${selectedDateRange != null ? '${selectedDateRange!.start.toString().split(' ')[0]} to ${selectedDateRange!.end.toString().split(' ')[0]}' : 'All Time'}',
-                style: pw.TextStyle(fontSize: 16),
+                style: const pw.TextStyle(fontSize: 16),
               ),
               pw.SizedBox(height: 16),
               pw.Divider(),
@@ -222,8 +233,8 @@ class _TransactionPageState extends State<TransactionPage> {
                 itemBuilder: (context, index) {
                   final transaction = transactions[index];
                   return pw.Container(
-                    margin: pw.EdgeInsets.symmetric(vertical: 4),
-                    padding: pw.EdgeInsets.all(8),
+                    margin: const pw.EdgeInsets.symmetric(vertical: 4),
+                    padding: const pw.EdgeInsets.all(8),
                     decoration: pw.BoxDecoration(
                       borderRadius: pw.BorderRadius.circular(4),
                       color: PdfColors.grey200,
@@ -243,7 +254,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             ),
                             pw.Text(
                               transaction.date.toString().split(' ')[0],
-                              style: pw.TextStyle(
+                              style: const pw.TextStyle(
                                 fontSize: 12,
                                 color: PdfColors.grey600,
                               ),
@@ -278,7 +289,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   pw.Text(
                     '\$${transactions.where((t) => t.type == 'income').fold(0.0, (sum, t) => sum + t.price).toStringAsFixed(2)}',
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                       fontSize: 16,
                       color: PdfColors.green,
                     ),
@@ -298,7 +309,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   pw.Text(
                     '\$${transactions.where((t) => t.type == 'expense').fold(0.0, (sum, t) => sum + t.price).toStringAsFixed(2)}',
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                       fontSize: 16,
                       color: PdfColors.red,
                     ),
@@ -349,7 +360,7 @@ class _TransactionPageState extends State<TransactionPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Income'),
+          title: const Text('Add Income'),
           content: SingleChildScrollView(
             child: Form(
               key: formKey,
@@ -359,7 +370,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   TextFormField(
                     controller: amountController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Amount',
                       border: OutlineInputBorder(),
                     ),
@@ -374,10 +385,10 @@ class _TransactionPageState extends State<TransactionPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   TextFormField(
                     controller: incomeNameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Income Name',
                       border: OutlineInputBorder(),
                     ),
@@ -388,15 +399,19 @@ class _TransactionPageState extends State<TransactionPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Category',
                       border: OutlineInputBorder(),
                     ),
                     value: selectedCategory,
-                    items: <String>['Salary', 'Freelance', 'Investment', 'Other']
-                        .map((String category) {
+                    items: <String>[
+                      'Salary',
+                      'Freelance',
+                      'Investment',
+                      'Other'
+                    ].map((String category) {
                       return DropdownMenuItem<String>(
                         value: category,
                         child: Text(category),
@@ -412,7 +427,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   TextButton(
                     onPressed: () async {
                       DateTime? pickedDate = await showDatePicker(
@@ -429,7 +444,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       selectedDate == null
                           ? 'Select Date'
                           : 'Selected Date: ${selectedDate.toString().split(' ')[0]}',
-                      style: TextStyle(color: Colors.blue),
+                      style: const TextStyle(color: Colors.blue),
                     ),
                   ),
                 ],
@@ -441,14 +456,14 @@ class _TransactionPageState extends State<TransactionPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
                   if (selectedDate == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please select a date')),
+                      const SnackBar(content: Text('Please select a date')),
                     );
                     return;
                   }
@@ -460,12 +475,13 @@ class _TransactionPageState extends State<TransactionPage> {
                   );
 
                   // Call the addTransaction method from the Expenses class
-                  Provider.of<Expenses>(context, listen: false).addTransaction(income);
+                  Provider.of<Expenses>(context, listen: false)
+                      .addTransaction(income);
 
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Add'),
+              child: const Text('Add'),
             ),
           ],
         );
@@ -481,151 +497,162 @@ class _TransactionPageState extends State<TransactionPage> {
     DateTime? selectedDate;
 
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add Expense'),
-          content: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    controller: amountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'Amount',
-                      border: OutlineInputBorder(),
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Add Expense'),
+            content: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Amount',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the amount';
+                        }
+                        final amount = double.tryParse(value);
+                        if (amount == null || amount <= 0) {
+                          return 'Please enter a valid amount greater than zero';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the amount';
-                      }
-                      final amount = double.tryParse(value);
-                      if (amount == null || amount <= 0) {
-                        return 'Please enter a valid amount greater than zero';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: expenseNameController,
-                    decoration: InputDecoration(
-                      labelText: 'Expense Name',
-                      border: OutlineInputBorder(),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: expenseNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Expense Name',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the expense name';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the expense name';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16.0),
-                  DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: 'Category',
-                      border: OutlineInputBorder(),
+                    const SizedBox(height: 16.0),
+                    DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        labelText: 'Category',
+                        border: OutlineInputBorder(),
+                      ),
+                      value: selectedCategory,
+                      items: <String>['Food', 'Transport', 'Bills', 'Other']
+                          .map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(category),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        selectedCategory = newValue;
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please select a category';
+                        }
+                        return null;
+                      },
                     ),
-                    value: selectedCategory,
-                    items: <String>['Food', 'Transport', 'Bills', 'Other']
-                        .map((String category) {
-                      return DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      selectedCategory = newValue;
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Please select a category';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16.0),
-                  TextButton(
-                    onPressed: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101),
-                      );
-                      if (pickedDate != null) {
-                        selectedDate = pickedDate;
-                      }
-                    },
-                    child: Text(
-                      selectedDate == null
-                          ? 'Select Date'
-                          : 'Selected Date: ${selectedDate.toString().split(' ')[0]}',
-                      style: TextStyle(color: Colors.blue),
+                    const SizedBox(height: 16.0),
+                    TextButton(
+                      onPressed: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
+                        );
+                        if (pickedDate != null) {
+                          selectedDate = pickedDate;
+                        }
+                      },
+                      child: Text(
+                        selectedDate == null
+                            ? 'Select Date'
+                            : 'Selected Date: ${selectedDate.toString().split(' ')[0]}',
+                        style: const TextStyle(color: Colors.blue),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  if (selectedDate == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please select a date')),
-                    );
-                    return;
-                  }
-                  final expense = ExpenseTile(
-                    name: expenseNameController.text,
-                    price: double.parse(amountController.text),
-                    date: selectedDate ?? DateTime.now(),
-                    type: 'expense', // Set type to 'expense'
-                  );
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    if (selectedDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please select a date')),
+                      );
+                      return;
+                    }
 
-                  // Attempt to add the transaction
-                  bool success = await Provider.of<Expenses>(context, listen: false).addTransaction(expense);
+                    // Fetch available balance from the Expenses provider
+                    final availableBalance =
+                        Provider.of<Expenses>(context, listen: false)
+                            .getAvailableBalance();
+                    final enteredAmount = double.parse(amountController.text);
 
-                  if (!success) {
-                    // Show an error alert if the expense exceeds the available income
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Insufficient Funds'),
-                          content: Text('The expense amount exceeds your available balance.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  } else {
-                    Navigator.of(context).pop(); // Close the dialog if the transaction was added successfully
+                    if (enteredAmount > availableBalance) {
+                      // Show error if entered amount exceeds balance
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Insufficient Funds'),
+                            content: const Text(
+                                'The expense amount exceeds your available balance.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      // Proceed with adding the expense if the balance is sufficient
+                      final expense = ExpenseTile(
+                        name: expenseNameController.text,
+                        price: enteredAmount,
+                        date: selectedDate ?? DateTime.now(),
+                        type: 'expense', // Set type to 'expense'
+                      );
+
+                      bool success =
+                          await Provider.of<Expenses>(context, listen: false)
+                              .addTransaction(expense);
+
+                      if (success) {
+                        Navigator.of(context).pop(); // Close dialog on success
+                      }
+                    }
                   }
-                }
-              },
-              child: Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
+                },
+                child: const Text('Add'),
+              ),
+            ],
+          );
+        });
   }
 }

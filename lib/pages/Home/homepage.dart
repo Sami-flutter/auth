@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -69,18 +69,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5), // Light background color
+      backgroundColor: const Color(0xFFF5F5F5), // Light background color
       body: FutureBuilder(
         future: Provider.of<Expenses>(context, listen: false).initialize(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error loading data: ${snapshot.error}'));
           } else {
             return Consumer<Expenses>(
               builder: (context, expensesProvider, child) {
-                double totalBalance = expensesProvider.calculateTotalBalance(); // Calculate total balance
+                double totalBalance = expensesProvider
+                    .calculateTotalBalance(); // Calculate total balance
 
                 double totalIncome = expensesProvider.transactions
                     .where((item) => item.type == 'income')
@@ -94,8 +95,9 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: [
                       // Add space at the top of the AppBar
-                      SizedBox(height: 50), // Adjust the height to the desired space
-                      
+                      const SizedBox(
+                          height: 50), // Adjust the height to the desired space
+
                       // Custom AppBar with User Info
                       Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -106,21 +108,23 @@ class _HomePageState extends State<HomePage> {
                                 CircleAvatar(
                                   backgroundImage: userImageUrl.isNotEmpty
                                       ? NetworkImage(userImageUrl)
-                                      : AssetImage('assets/default_avatar.png')
+                                      : const AssetImage(
+                                              'assets/default_avatar.png')
                                           as ImageProvider,
                                   radius: 24,
                                 ),
-                                SizedBox(width: 22),
+                                const SizedBox(width: 22),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Welcome!',
-                                      style: TextStyle(color: Colors.black, fontSize: 12),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 12),
                                     ),
                                     Text(
                                       userName,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -128,9 +132,10 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 IconButton(
-                                  icon: Icon(Icons.settings, color: Colors.grey),
+                                  icon: const Icon(Icons.settings,
+                                      color: Colors.grey),
                                   onPressed: () {
                                     // Handle settings navigation
                                   },
@@ -140,17 +145,17 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                      
+
                       // Add spacing between the AppBar and Balance Container
-                   //   SizedBox(height: 15),
-                      
+                      //   SizedBox(height: 15),
+
                       // Balance Container
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Container(
-                          padding: EdgeInsets.all(25.0),
+                          padding: const EdgeInsets.all(25.0),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                               colors: [Color(0xFF3E60E9), Color(0xFFED6A5A)],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -160,33 +165,35 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Total Balance',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              SizedBox(height: 8.0),
+                              const SizedBox(height: 8.0),
                               Text(
                                 '\$${totalBalance.toStringAsFixed(2)}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 32,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 16.0),
+                              const SizedBox(height: 16.0),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Income',
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       Text(
                                         '\$${totalIncome.toStringAsFixed(2)}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
@@ -195,15 +202,16 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Expenses',
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       Text(
                                         '\$${totalExpenses.toStringAsFixed(2)}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
@@ -217,14 +225,15 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      
+
                       // Transactions List
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               'Transactions',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -235,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                               onPressed: () {
                                 // Navigate to all transactions
                               },
-                              child: Text(
+                              child: const Text(
                                 'View All',
                                 style: TextStyle(color: Color(0xFF3498DB)),
                               ),
@@ -244,8 +253,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       if (expensesProvider.transactions.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
                           child: Text(
                             'No transactions found.',
                             style: TextStyle(color: Colors.grey),
@@ -255,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                         ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: expensesProvider.transactions.length,
                           itemBuilder: (context, index) {
                             final item = expensesProvider.transactions[index];
@@ -266,7 +275,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               child: ListTile(
                                 leading: CircleAvatar(
-                                  backgroundColor: Color(0xFFF5F5F5),
+                                  backgroundColor: const Color(0xFFF5F5F5),
                                   child: Icon(
                                     _getIconForCategory(item.name),
                                     color: isIncome ? Colors.green : Colors.red,
@@ -274,12 +283,14 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 title: Text(
                                   item.name,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                subtitle: Text(item.date.toString().split(' ')[0]), // Show the date
+                                subtitle: Text(item.date
+                                    .toString()
+                                    .split(' ')[0]), // Show the date
                                 trailing: Text(
                                   '\$${item.price.toStringAsFixed(2)}',
                                   style: TextStyle(
@@ -307,33 +318,37 @@ class _HomePageState extends State<HomePage> {
             MaterialPageRoute(builder: (context) => TransactionPage()),
           );
         },
-        backgroundColor: Color(0xFF3E60E9),
-        child: Icon(Icons.add),
+        backgroundColor: const Color(0xFF3E60E9),
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: Icon(Icons.home, color: Colors.grey),
+              icon: const Icon(Icons.home, color: Colors.grey),
               onPressed: () {
                 // Navigate to Home
               },
             ),
             IconButton(
-              icon: Icon(Icons.bar_chart, color: Colors.grey),
+              icon: const Icon(Icons.bar_chart, color: Colors.grey),
               onPressed: () {
                 // Navigate to statistics
               },
             ),
-            SizedBox(width: 48), // The dummy child for the FAB
+            const SizedBox(width: 48), // The dummy child for the FAB
             IconButton(
-              icon: Icon(Icons.person, color: Colors.grey),
+              icon: const Icon(Icons.person, color: Colors.grey),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserProfile(),
+                    ));
               },
             ),
           ],

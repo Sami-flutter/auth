@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+import 'package:intl/intl.dart'; // Importing intl package for date formatting
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -43,20 +44,19 @@ class _UserProfileState extends State<UserProfile> {
 
     Map<String, dynamic>? userData = await _userService.fetchUserData(_userId!);
 
-    if (userData != null) {
-      setState(() {
-        _nameController.text = userData['name'];
-        _emailController.text = userData['email'];
-        _dobController.text = userData['dob'];
-        _countryController.text = userData['country'];
-        _imageUrl = userData['imageUrl'];
-      });
-    }
+    setState(() {
+      _nameController.text = userData?['name'] ?? '';
+      _emailController.text = userData?['email'] ?? '';
+      _dobController.text = userData?['dob'] ?? '';
+      _countryController.text = userData?['country'] ?? '';
+      _imageUrl = userData?['imageUrl'] ?? '';
+    });
   }
 
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -65,7 +65,7 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Future<void> _uploadImage() async {
+  Future<void> uploadImage() async {
     if (_imageFile == null) return;
 
     try {
@@ -83,12 +83,12 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Future<void> _updateUserData() async {
+  Future<void> updateUserData() async {
     if (_userId == null) return;
 
     // Upload the image if a new one was selected
     if (_imageFile != null) {
-      await _uploadImage();
+      await uploadImage();
     }
 
     // Update the user's password if the password field is not empty
@@ -98,7 +98,7 @@ class _UserProfileState extends State<UserProfile> {
         if (user != null) {
           await user.updatePassword(_passwordController.text);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Password updated successfully')),
+            const SnackBar(content: Text('Password updated successfully')),
           );
         }
       } on FirebaseAuthException catch (e) {
@@ -120,12 +120,27 @@ class _UserProfileState extends State<UserProfile> {
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile updated successfully')),
+        const SnackBar(content: Text('Profile updated successfully')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile')),
+        const SnackBar(content: Text('Failed to update profile')),
       );
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
     }
   }
 
@@ -166,8 +181,8 @@ class _UserProfileState extends State<UserProfile> {
                       bottom: 0,
                       right: 0,
                       child: InkWell(
-                        onTap: _pickImage,
-                        child: CircleAvatar(
+                        onTap: pickImage,
+                        child: const CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 15,
                           child: Icon(Icons.camera_alt, size: 15),
@@ -268,27 +283,33 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               const SizedBox(height: 5),
-              TextField(
-                controller: _dobController,
-                decoration: InputDecoration(
-                  hintText: 'Enter your date of birth',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+              GestureDetector(
+                onTap: () => _selectDate(context), // Open date picker
+                child: AbsorbPointer(
+                  // Prevent keyboard from appearing
+                  child: TextField(
+                    controller: _dobController,
+                    decoration: InputDecoration(
+                      hintText: 'Select your date of birth',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey[500]!),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                    ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey[500]!),
-                  ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
               ),
               const SizedBox(height: 20),
               const Text(
-                'Country/Region',
+                'Country',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -298,7 +319,7 @@ class _UserProfileState extends State<UserProfile> {
               TextField(
                 controller: _countryController,
                 decoration: InputDecoration(
-                  hintText: 'Enter your country/region',
+                  hintText: 'Enter your country',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -315,35 +336,9 @@ class _UserProfileState extends State<UserProfile> {
               ),
               const SizedBox(height: 30),
               Center(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF3E60E9), Color(0xFFED6A5A)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: ElevatedButton(
-                    onPressed: _updateUserData,
-                    child: const Text(
-                      'Save changes',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent, // Use transparent to show gradient
-                      shadowColor: Colors.transparent, // Remove shadow to keep gradient clear
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
+                child: ElevatedButton(
+                  onPressed: updateUserData,
+                  child: const Text('Update Profile'),
                 ),
               ),
             ],

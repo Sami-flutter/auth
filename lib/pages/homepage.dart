@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -81,7 +81,8 @@ class _HomePageState extends State<HomePage> {
           } else {
             return Consumer<Expenses>(
               builder: (context, expensesProvider, child) {
-                double totalBalance = expensesProvider.calculateTotalBalance(); // Calculate total balance
+                double totalBalance = expensesProvider
+                    .calculateTotalBalance(); // Calculate total balance
 
                 double totalIncome = expensesProvider.transactions
                     .where((item) => item.type == 'income')
@@ -95,8 +96,9 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: [
                       // Add space at the top of the AppBar
-                      SizedBox(height: 50), // Adjust the height to the desired space
-                      
+                      SizedBox(
+                          height: 50), // Adjust the height to the desired space
+
                       // Custom AppBar with User Info
                       Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -117,7 +119,8 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Text(
                                       'Welcome!',
-                                      style: TextStyle(color: Colors.black, fontSize: 12),
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 12),
                                     ),
                                     Text(
                                       userName,
@@ -131,13 +134,18 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Spacer(),
                                 IconButton(
-                                  icon: Icon(Icons.logout, color: Colors.grey), // Change to logout icon
+                                  icon: Icon(Icons.logout,
+                                      color:
+                                          Colors.grey), // Change to logout icon
                                   onPressed: () async {
                                     // Call the logout method from the Expenses class
-                                    await Provider.of<Expenses>(context, listen: false).logout();
-                                    
+                                    await Provider.of<Expenses>(context,
+                                            listen: false)
+                                        .logout();
+
                                     // Navigate to the login screen or any other appropriate screen
-                                    Navigator.of(context).pushReplacementNamed('/login');
+                                    Navigator.of(context)
+                                        .pushReplacementNamed('/login');
                                   },
                                 ),
                               ],
@@ -145,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                      
+
                       // Add spacing between the AppBar and Balance Container
                       // Balance Container
                       Padding(
@@ -178,10 +186,12 @@ class _HomePageState extends State<HomePage> {
                               ),
                               SizedBox(height: 16.0),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Income',
@@ -198,7 +208,8 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Expenses',
@@ -220,10 +231,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      
+
                       // Transactions List
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -282,7 +294,9 @@ class _HomePageState extends State<HomePage> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                subtitle: Text(item.date.toString().split(' ')[0]), // Show the date
+                                subtitle: Text(item.date
+                                    .toString()
+                                    .split(' ')[0]), // Show the date
                                 trailing: Text(
                                   '\$${item.price.toStringAsFixed(2)}',
                                   style: TextStyle(
@@ -336,7 +350,11 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.person, color: Colors.grey),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserProfile(),
+                    ));
               },
             ),
           ],

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Transaction {
-  final IconData icon;  // Icon for the transaction
-  final String name;    // Name or description of the transaction
-  final DateTime date;  // Date of the transaction
-  final double price;   // Price of the transaction
+  final IconData icon; // Icon for the transaction
+  final String name; // Name or description of the transaction
+  final DateTime date; // Date of the transaction
+  final double price; // Price of the transaction
 
   // Constructor to initialize the transaction fields
   Transaction({
@@ -61,7 +61,7 @@ class TransactionsListTile extends StatelessWidget {
                 return ListTile(
                   leading: Icon(transaction.icon),
                   title: Text(transaction.name),
-                  subtitle: Text('${transaction.date.toShortDateString()}'),
+                  subtitle: Text(transaction.date.toShortDateString()),
                   trailing: Text(
                     '\$${transaction.price.toStringAsFixed(2)}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -79,6 +79,6 @@ class TransactionsListTile extends StatelessWidget {
 extension DateFormatting on DateTime {
   String toShortDateString() {
     // Format the date to a short string (e.g., "8/5/2024")
-    return '${this.month}/${this.day}/${this.year}';
+    return '$month/$day/$year';
   }
 }
